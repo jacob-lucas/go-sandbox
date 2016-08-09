@@ -44,10 +44,7 @@ func (rm RedisMap) Get(key string) string {
 }
 
 func (rm RedisMap) Put(key, value string) string {
-	if rm.ContainsKey(key) {
-		rm.Conn.Do("DEL", key)
-	}
-	_, err := rm.Conn.Do("APPEND", key, value)
+	_, err := rm.Conn.Do("SET", key, value)
 	if err != nil {
 		fmt.Println(err.Error())
 		panic(err)

@@ -27,16 +27,16 @@ func TestIsEmptyOnEmptyMap(t *testing.T) {
 
 func TestSizeOnNonEmptyMap(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "a", "1")
-	conn.Do("APPEND", "b", "2")
+	conn.Do("SET", "a", "1")
+	conn.Do("SET", "b", "2")
 	r := redismap.RedisMap{Conn: conn}
 	assert.Equal(t, 2, r.Size())
 }
 
 func TestIsEmptyOnNonEmptyMap(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "a", "1")
-	conn.Do("APPEND", "b", "2")
+	conn.Do("SET", "a", "1")
+	conn.Do("SET", "b", "2")
 	r := redismap.RedisMap{Conn: conn}
 	assert.False(t, r.IsEmpty())
 }
@@ -44,15 +44,15 @@ func TestIsEmptyOnNonEmptyMap(t *testing.T) {
 func TestSizeCountsKeys(t *testing.T) {
 	defer after()
 	r := redismap.RedisMap{Conn: conn}
-	conn.Do("APPEND", "a", "1")
-	conn.Do("APPEND", "a", "2")
+	conn.Do("SET", "a", "1")
+	conn.Do("SET", "a", "2")
 	assert.Equal(t, 1, r.Size())
 }
 
 func TestContainsKeyOnExistingKey(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "a", "1")
-	conn.Do("APPEND", "b", "2")
+	conn.Do("SET", "a", "1")
+	conn.Do("SET", "b", "2")
 	r := redismap.RedisMap{Conn: conn}
 	assert.True(t, r.ContainsKey("a"))
 	assert.True(t, r.ContainsKey("b"))
@@ -60,8 +60,8 @@ func TestContainsKeyOnExistingKey(t *testing.T) {
 
 func TestContainsKeyOnNonExistingKey(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "a", "1")
-	conn.Do("APPEND", "b", "2")
+	conn.Do("SET", "a", "1")
+	conn.Do("SET", "b", "2")
 	r := redismap.RedisMap{Conn: conn}
 	assert.False(t, r.ContainsKey("c"))
 	assert.False(t, r.ContainsKey("d"))
@@ -71,7 +71,7 @@ func TestGetForExistingKey(t *testing.T) {
 	defer after()
 	r := redismap.RedisMap{Conn: conn}
 	key := "a"
-	conn.Do("APPEND", "a", "1")
+	conn.Do("SET", "a", "1")
 	assert.Equal(t, "1", r.Get(key))
 }
 
@@ -91,7 +91,7 @@ func TestPutSizeForNewKey(t *testing.T) {
 
 func TestPutSizeForExistingKey(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "foo", "bar")
+	conn.Do("SET", "foo", "bar")
 	r := redismap.RedisMap{Conn: conn}
 	assert.Equal(t, 1, r.Size())
 	r.Put("foo", "baz")
@@ -108,7 +108,7 @@ func TestPutValueForNewKey(t *testing.T) {
 
 func TestPutValueForExistingKey(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "foo", "bar")
+	conn.Do("SET", "foo", "bar")
 	r := redismap.RedisMap{Conn: conn}
 	assert.Equal(t, 1, r.Size())
 	val := r.Put("foo", "baz")
@@ -118,7 +118,7 @@ func TestPutValueForExistingKey(t *testing.T) {
 func TestRemoveValueForExistingKey(t *testing.T) {
 	defer after()
 	key := "foo"
-	conn.Do("APPEND", key, "bar")
+	conn.Do("SET", key, "bar")
 	r := redismap.RedisMap{Conn: conn}
 	assert.False(t, r.IsEmpty())
 	assert.True(t, r.Remove(key))
@@ -127,7 +127,7 @@ func TestRemoveValueForExistingKey(t *testing.T) {
 
 func TestRemoveValueForNonExistingKey(t *testing.T) {
 	defer after()
-	conn.Do("APPEND", "foo", "bar")
+	conn.Do("SET", "foo", "bar")
 	r := redismap.RedisMap{Conn: conn}
 	assert.Equal(t, 1, r.Size())
 	assert.False(t, r.Remove("baz"))
